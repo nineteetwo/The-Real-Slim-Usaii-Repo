@@ -4,6 +4,8 @@ FastAPI backend plus the original vanilla HTML/CSS/JS frontend for the CalHelpr 
 
 This is the maintained app UI. It does not use Streamlit.
 
+WE BELIEVE IN U WENDY U CAN DO DIS
+
 ## Run
 
 From this folder:
