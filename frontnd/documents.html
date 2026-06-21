@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CalHelpr - Documents</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Allerta+Stencil&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+</head>
+<body>
+    <div class="app-container">
+        <aside class="sidebar">
+            <a href="index.html" class="sidebar-brand">
+                <span class="brand-text">CalHelpr</span>
+                <i class="bi bi-plus-lg brand-cross"></i>
+            </a>
+
+            <nav class="sidebar-nav">
+                <a href="index.html" class="nav-item" id="nav-new-chat">
+                    <i class="fa-regular fa-pen-to-square"></i>
+                    <span>New Chat</span>
+                </a>
+                <a href="history.html" class="nav-item" id="nav-library">
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+                    <span>History</span>
+                </a>
+                <a href="documents.html" class="nav-item active" id="nav-documents">
+                    <i class="fa-solid fa-file-medical"></i>
+                    <span>My Documents</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-divider"></div>
+
+            <nav class="sidebar-nav">
+                <a href="emergency.html" class="nav-item nav-emergency" id="nav-emergency-sidebar">
+                    <div class="emergency-icon">
+                        <i class="bi bi-plus-lg"></i>
+                    </div>
+                    <span>Emergency Numbers</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-content">
+                <p class="sidebar-section-label">Recent</p>
+                <div class="chat-list">
+                    </div>
+            </div>
+
+            <div class="sidebar-footer">
+                <p class="sidebar-signin-prompt" id="sidebar-signin-text">
+                    <a href="login.html">Sign in</a> to save your conversations.
+                </p>
+                <div class="user-profile">
+                    <div class="avatar"><i class="fa-solid fa-user"></i></div>
+                    <span id="sidebar-name">Guest</span>
+                </div>
+            </div>
+        </aside>
+
+        <main class="documents-page">
+            <section class="workflow-header">
+                <h1>My Documents</h1>
+                <p>Manage reusable files. For chat-specific analysis, attach documents directly inside a chat with the paperclip button.</p>
+            </section>
+            <section class="documents-layout">
+            <section class="doc-card">
+                <h3>Upload Document</h3>
+                <p class="subtitle">Add reusable documents to your general document library.</p>
+                
+                <form id="uploadForm">
+                    <div class="file-drop-zone">
+                        <input type="file" id="fileInput" required>
+                        <label for="fileInput" class="file-label">
+                            <i class="fa-solid fa-cloud-arrow-up"></i>
+                            <span>Choose a file to upload</span>
+                        </label>
+                    </div>
+                    <button type="submit" class="btn-primary">Upload File</button>
+                </form>
+                <div id="uploadStatus"></div>
+            </section>
+
+            <section class="doc-card">
+                <h3>Your Active Documents</h3>
+                <p class="subtitle">General documents outside a specific chat context.</p>
+                <div id="fileListContainer">
+                    <p class="loading-text">Loading file manager repository...</p>
+                </div>
+            </section>
+
+            <section class="doc-card">
+                <h3>FPL Calculator</h3>
+                <p class="subtitle">Calculate your Federal Poverty Level percentage from a general document.</p>
+                <form id="fplForm" onsubmit="calculateFPLFromDoc(event)">
+                    <div style="margin-bottom: 15px;">
+                        <label for="fplDocSelect" style="display:block; margin-bottom:5px;">Select Document</label>
+                        <select id="fplDocSelect" required style="width:100%; padding:8px; border-radius:4px; border:1px solid #ccc; background:var(--bg-primary); color:var(--text-primary);">
+                            <option value="">Upload a document first</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn-primary">Calculate FPL</button>
+                </form>
+                <div id="fplResult" style="margin-top: 15px; padding: 10px; background:var(--bg-secondary); border-radius: 4px;">
+                    Select a document and calculate to see your result.
+                </div>
+            </section>
+            </section>
+        </main>
+
+        <nav class="mobile-bottom-bar">
+            <a href="index.html" class="bottom-bar-item" id="nav-chat">
+                <i class="fa-regular fa-message"></i>
+                <span>Chat</span>
+            </a>
+            <a href="emergency.html" class="bottom-bar-item emergency-mobile" id="nav-emergency">
+                <div class="emergency-icon-mobile">
+                    <i class="bi bi-plus-lg"></i>
+                </div>
+                <span>Emergency</span>
+            </a>
+            <a href="history.html" class="bottom-bar-item" id="nav-history">
+                <i class="fa-solid fa-clock-rotate-left"></i>
+                <span>History</span>
+            </a>
+            <a href="documents.html" class="bottom-bar-item active" id="nav-documents-mobile">
+                <i class="fa-solid fa-file-medical"></i>
+                <span>Docs</span>
+            </a>
+        </nav>
+    </div>
+
+    <script src="documents.js"></script>
+</body>
+</html>

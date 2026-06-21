@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Sign in to CalHelpr — Access your conversation history and personalized settings.">
+    <title>Sign In — CalHelpr</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Allerta+Stencil&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+</head>
+
+<body class="auth-body">
+    <div class="auth-wrapper">
+        <!-- Back link -->
+        <a href="index.html" class="auth-back-link" id="login-back">
+            <i class="fa-solid fa-arrow-left"></i>
+            <span>Back to Chat</span>
+        </a>
+
+        <div class="auth-card">
+            <!-- Logo / Brand -->
+            <div class="auth-brand">
+                <a href="index.html" class="auth-logo-row">
+                    <span class="brand-text brand-text-lg">CalHelpr</span>
+                    <i class="bi bi-plus-lg brand-cross brand-cross-lg"></i>
+                </a>
+                <h1 class="auth-title">Welcome Back</h1>
+                <p class="auth-subtitle">Sign in to continue to CalHelpr</p>
+            </div>
+
+            <!-- Login Form -->
+            <form id="login-form" class="auth-form" action="#" method="post">
+                <div class="form-group">
+                    <label for="login-email" class="form-label">Email Address</label>
+                    <div class="form-input-wrap">
+                        <i class="fa-regular fa-envelope form-icon"></i>
+                        <input type="email" id="login-email" class="form-input" placeholder="you@example.com" required
+                            autocomplete="email">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="login-password" class="form-label">Password</label>
+                    <div class="form-input-wrap">
+                        <i class="fa-solid fa-lock form-icon"></i>
+                        <input type="password" id="login-password" class="form-input" placeholder="Enter your password"
+                            required autocomplete="current-password">
+                        <button type="button" id="toggle-password" class="form-toggle-pw"
+                            aria-label="Toggle password visibility">
+                            <i class="fa-regular fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-options">
+                    <label class="form-checkbox-label">
+                        <input type="checkbox" id="remember-me" class="form-checkbox">
+                        <span class="form-checkbox-custom"></span>
+                        <span>Remember me</span>
+                    </label>
+                    <a href="#" class="form-link" id="forgot-password-link">Forgot password?</a>
+                </div>
+
+                <button type="submit" id="login-submit" class="auth-submit-btn">
+                    Sign In
+                </button>
+            </form>
+
+            <!-- Sign-up nudge -->
+            <p class="auth-switch-text">
+                Don't have an account? <a href="signup.html" class="form-link" id="signup-link">Create one</a>
+            </p>
+        </div>
+
+        <!-- Footer -->
+        <p class="auth-footer-text">
+            &copy; 2026 CalHelpr. All rights reserved.
+        </p>
+    </div>
+
+    <script src="auth.js"></script>
+</body>
+
+</html>

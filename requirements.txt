@@ -1,0 +1,14 @@
+fastapi 
+uvicorn 
+sqlalchemy
+python-multipart
+python-dotenv
+
+pdfplumber
+pypdf
+pdf2image
+pytesseract
+python-docx
+openpyxl
+python-pptx
+Pillow

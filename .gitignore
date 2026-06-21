@@ -1,0 +1,9 @@
+.vscode
+**/__pycache__
+**/output
+**/uploads
+calhelper.db
+programs_db.json
+profile.json
+report.md
+parsed.txt

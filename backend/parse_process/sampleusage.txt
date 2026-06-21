@@ -1,0 +1,18 @@
+Example usage:
+
+    python doc_parser.py sample_applicant_assistance_intake.pdf -o parsed.txt
+
+    ollama serve
+    ollama pull llama3.2:3b/other model
+
+    python process_parse.py parsed.txt --backend ollama --model llama3.2:3b --format json --system "Extract applicant facts for assistance eligibility as JSON and mention the type of program they need." -o profile.json
+
+    python assistance_finder.py profile.json --location IL --backend ollama --model llama3.2:3b --db programs_db.json -o report.md
+
+    - to call guidance_generator.py based on application/program status
+    accepted: python .\guidance_generator.py accepted --program "Illinois Family Food Support Program" --profile .\report.md --backend ollama --model llama3.2:3b -o .\guide.md
+    rejected: python .\guidance_generator.py rejected --program "Illinois Family Food Support Program" --profile .\report.md --backend ollama --model llama3.2:3b -o .\guide.md
+    no programs: python .\guidance_generator.py no_programs_found --profile .\report.md --backend ollama --model llama3.2:3b -o .\guide.md
+
+    - follow up chat
+    python .\followup_chat.py --profile .\report.json --guide .\guide_accepted.md --db .\programs_db.json --history .\chat_history.txt --location IL --backend ollama --model llama3.2:3b --timeout 1000 --max-tokens 4096 --no-web-fallback
