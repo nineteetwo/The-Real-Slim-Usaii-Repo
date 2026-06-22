@@ -41,10 +41,19 @@ app = FastAPI(title="CalHelpr Backend")
 Base = declarative_base()
 database.init_db()
 
+LOCAL_CORS_ORIGINS = [
+    "http://localhost:9292",
+    "http://127.0.0.1:9292",
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+    "null",
+]
+
 # Local file frontend access configuration
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Allows browser local files to reach the ports
+    allow_origins=LOCAL_CORS_ORIGINS,
+    allow_origin_regex=r"https?://(localhost|127\.0\.0\.1)(:\d+)?",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -361,6 +370,18 @@ def save_raw_workflow_profile(payload: RawJsonRequest):
 
 @app.post("/api/workflow/match")
 def run_program_matching(payload: MatchRequest):
+    try:
+        return _run_program_matching(payload)
+    except HTTPException:
+        raise
+    except Exception as exc:
+        return JSONResponse(
+            status_code=500,
+            content={"detail": f"Program matching failed: {exc}"},
+        )
+
+
+def _run_program_matching(payload: MatchRequest):
     profile = read_artifact(payload.email, "profile.json", thread_id=payload.thread_id)
     if not isinstance(profile, dict):
         raise HTTPException(status_code=400, detail="Extract or save an applicant profile before matching.")

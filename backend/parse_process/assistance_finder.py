@@ -76,7 +76,7 @@ import urllib.parse
 import urllib.request
 from html.parser import HTMLParser
 from pathlib import Path
-from typing import Optional
+from typing import Any, Optional
 
 
 # Import LLM backend infrastructure from process_parse.py
@@ -578,7 +578,11 @@ def assess_eligibility(profile: dict, program: dict, backend, quiet: bool) -> di
     )
 
     log(f"  Assessing eligibility: {program.get('name')}…", quiet)
-    parsed, raw = call_llm_json(backend, SYSTEM_PROMPT_ELIGIBILITY, user_prompt, quiet)
+    try:
+        parsed, raw = call_llm_json(backend, SYSTEM_PROMPT_ELIGIBILITY, user_prompt, quiet)
+    except Exception as exc:
+        parsed = None
+        raw = f"Eligibility model call failed: {exc}"
 
     if parsed is None:
         parsed = {
@@ -763,51 +767,60 @@ def find_assistance(
 
 
 # Report formatting
+def _markdown_text(value: Any, fallback: str = "") -> str:
+    if value is None:
+        return fallback
+    text = str(value)
+    return text if text else fallback
+
+
 def _format_program_block(m: dict) -> str:
-    ea = m["eligibility_analysis"]
+    ea = m.get("eligibility_analysis") or {}
     status = STATUS_LABELS.get(ea.get("status"), ea.get("status", "unknown"))
     lines = [
-        f"### {m.get('program_name')}",
-        f"**Status:** {status}  |  **Confidence:** {ea.get('confidence', 'n/a')}",
+        f"### {_markdown_text(m.get('program_name'), 'Unnamed program')}",
+        f"**Status:** {_markdown_text(status, 'unknown')}  |  **Confidence:** {_markdown_text(ea.get('confidence'), 'n/a')}",
         "",
-        ea.get("summary", ""),
+        _markdown_text(ea.get("summary")),
         "",
     ]
     det = m.get("deterministic_checks") or {}
     if det.get("checks"):
         lines.append("**Deterministic screening checks:**")
         for c in det.get("checks", []):
-            lines.append(f"- *{c.get('name')}* — {c.get('assessment')}: {c.get('explanation')}")
+            lines.append(f"- *{_markdown_text(c.get('name'), 'Check')}* - {_markdown_text(c.get('assessment'), 'unknown')}: {_markdown_text(c.get('explanation'))}")
         lines.append("")
     lines.extend([
         "**Criteria breakdown:**",
     ])
     for c in ea.get("criteria_assessment", []):
-        lines.append(f"- *{c.get('criterion')}* — {c.get('assessment')}: {c.get('explanation')}")
+        lines.append(f"- *{_markdown_text(c.get('criterion'), 'Criterion')}* - {_markdown_text(c.get('assessment'), 'unknown')}: {_markdown_text(c.get('explanation'))}")
     if ea.get("missing_information"):
         lines.append("")
         lines.append("**Missing information:**")
         for mi in ea["missing_information"]:
-            lines.append(f"- {mi}")
+            lines.append(f"- {_markdown_text(mi)}")
     if ea.get("recommended_next_steps"):
         lines.append("")
         lines.append("**Recommended next steps:**")
         for step in ea["recommended_next_steps"]:
-            lines.append(f"- {step}")
+            lines.append(f"- {_markdown_text(step)}")
     if m.get("official_url"):
         lines.append("")
-        lines.append(f"More info / apply: {m['official_url']}")
+        lines.append(f"More info / apply: {_markdown_text(m['official_url'])}")
     if m.get("found_via") == "web_search":
         lines.append("_Found via web search — independently verify before relying on this._")
     lines.append("")
-    return "\n".join(lines)
+    return "\n".join(_markdown_text(line) for line in lines)
 
 
 def format_report_markdown(report: dict) -> str:
-    profile = report["applicant_profile"]
+    profile = report.get("applicant_profile") or {}
+    needed_categories = report.get("needed_categories") or []
+    needed_categories_text = ", ".join(_markdown_text(c) for c in needed_categories if c) or "unknown"
     lines = ["# Assistance Program Report", "", "## Applicant Summary",
-              profile.get("summary", "(no summary)"), "",
-              f"**Needed categories:** {', '.join(report['needed_categories'])}",
+              _markdown_text(profile.get("summary"), "(no summary)"), "",
+              f"**Needed categories:** {needed_categories_text}",
               f"**Location:** {report.get('resolved_state') or 'unknown'}", ""]
     fpl = profile.get("fpl_analysis") or {}
     if fpl:
@@ -821,14 +834,14 @@ def format_report_markdown(report: dict) -> str:
         ])
 
     lines.append("## Programs Found in Database")
-    if report["matched_programs"]:
-        for m in report["matched_programs"]:
+    if report.get("matched_programs"):
+        for m in report.get("matched_programs", []):
             lines.append(_format_program_block(m))
     else:
         lines.append("_No matching programs found in the static database for this location/category._")
         lines.append("")
 
-    if report["web_fallback_used"]:
+    if report.get("web_fallback_used"):
         lines.append("## Additional Programs Found via Web Search")
         lines.append(
             "_No qualifying program was found in the static database, so a web "
@@ -837,16 +850,16 @@ def format_report_markdown(report: dict) -> str:
             "independently before relying on them._"
         )
         lines.append("")
-        if report["web_programs"]:
-            for m in report["web_programs"]:
+        if report.get("web_programs"):
+            for m in report.get("web_programs", []):
                 lines.append(_format_program_block(m))
         else:
             lines.append("_No additional programs could be found via web search._")
             lines.append("")
 
     lines.append("---")
-    lines.append(report["disclaimer"])
-    return "\n".join(lines)
+    lines.append(_markdown_text(report.get("disclaimer"), DISCLAIMER))
+    return "\n".join(_markdown_text(line) for line in lines)
 
 
 # CLI
